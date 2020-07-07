@@ -16,7 +16,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
         function updateClock() {
             const timer = getTimeRemaining(),
-                idInterval = setInterval(updateClock, 1000);
+                idInterval = setTimeout(updateClock, 1000);
 
             if (timer.timeRemaining < 0) {
                 timerHours.textContent = '00';
@@ -40,16 +40,14 @@ window.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            if (timer.timeRemaining > 0) {
-                setInterval(updateClock, 1000);
-            } else {
+            if (timer.timeRemaining <= 0) {
                 clearInterval(idInterval);
             }
         }
         setTimeout(updateClock(), 1000);
     }
 
-    countTimer('10 july 2020');
+    countTimer('8 july 2020');
 
     const anchors = document.querySelectorAll('a[href*="#"]');
 
