@@ -47,7 +47,7 @@ window.addEventListener('DOMContentLoaded', () => {
         setTimeout(updateClock(), 1000);
     }
 
-    countTimer('10 july 2020');
+    countTimer('30 july 2020');
 
     const anchors = document.querySelectorAll('a[href*="#"]');
 
@@ -278,14 +278,65 @@ window.addEventListener('DOMContentLoaded', () => {
 
     //regex
     const regex = () => {
-        const calcItem = document.querySelectorAll('.calc-item');
+        const calcItem = document.querySelectorAll('.calc-item[type=text]');
 
         calcItem.forEach(elem => {
             elem.addEventListener('input', () => {
-                elem.value = elem.value.replace(/[^0-9.]/gi, '');
+                elem.value = elem.value.replace(/[^0-9]/gi, '');
             });
         });
     };
 
     regex();
+
+    //calculator
+    const calc = (price = 100) => {
+        const calcBlock = document.querySelector('.calc-block'),
+            calcType = document.querySelector('.calc-type'),
+            calcSquare = document.querySelector('.calc-square'),
+            calcCount = document.querySelector('.calc-count'),
+            calcDay = document.querySelector('.calc-day'),
+            totalValue = document.getElementById('total');
+
+        const countSum = () => {
+            const typeValue = calcType.options[calcType.selectedIndex].value,
+                squareValue = +calcSquare.value;
+            let total = 0,
+                countValue = 1,
+                dayValue = 1;
+
+            if (calcCount.value > 1) {
+                countValue += (calcCount.value - 1) / 10;
+            }
+
+            if (calcDay.value && calcDay.value < 5) {
+                dayValue *= 2;
+            } else if (calcDay.value && calcDay.value < 10) {
+                dayValue *= 1.5;
+            }
+
+            if (typeValue && squareValue) {
+                let step = 0;
+                total = Math.round(price * typeValue * squareValue * countValue * dayValue);
+                console.log(total);
+                const totalValueSteps = setInterval(() => {
+                    if (step < total) {
+                        step++;
+                        totalValue.textContent = step;
+                    } else {
+                        clearInterval(totalValueSteps);
+                    }
+                }, 1);
+            }
+        };
+
+        calcBlock.addEventListener('input', event => {
+            const target = event.target;
+            if (target.matches('select') || target.matches('input')) {
+                countSum();
+            }
+        });
+    };
+
+    calc(100);
 });
