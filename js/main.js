@@ -258,4 +258,34 @@ window.addEventListener('DOMContentLoaded', () => {
     };
 
     slider();
+
+    //data attributes
+    const dataImage = () => {
+        const img = document.querySelectorAll('.command__photo');
+
+        img.forEach(elem => {
+            const defaultImage = elem.src;
+            elem.addEventListener('mouseenter', event => {
+                event.target.src = event.target.dataset.img;
+            });
+            elem.addEventListener('mouseout', event => {
+                event.target.src = defaultImage;
+            });
+        });
+    };
+
+    dataImage();
+
+    //regex
+    const regex = () => {
+        const calcItem = document.querySelectorAll('.calc-item');
+
+        calcItem.forEach(elem => {
+            elem.addEventListener('input', () => {
+                elem.value = elem.value.replace(/[^0-9.]/gi, '');
+            });
+        });
+    };
+
+    regex();
 });
