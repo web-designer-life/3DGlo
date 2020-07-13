@@ -318,7 +318,6 @@ window.addEventListener('DOMContentLoaded', () => {
             if (typeValue && squareValue) {
                 let step = 0;
                 total = Math.round(price * typeValue * squareValue * countValue * dayValue);
-                console.log(total);
                 const totalValueSteps = setInterval(() => {
                     if (step < total) {
                         step++;
