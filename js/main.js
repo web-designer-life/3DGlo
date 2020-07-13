@@ -171,6 +171,9 @@ window.addEventListener('DOMContentLoaded', () => {
             for (let i = 0; i < slide.length; i++) {
                 const dot = document.createElement('li');
                 dot.classList.add('dot');
+                if (i === 0) {
+                    dot.classList.add('dot-active');
+                }
                 dotsList.append(dot);
             }
         };
@@ -278,12 +281,31 @@ window.addEventListener('DOMContentLoaded', () => {
 
     //regex
     const regex = () => {
-        const calcItem = document.querySelectorAll('.calc-item[type=text]');
+        const calcItem = document.querySelectorAll('.calc-item[type=text]'),
+            inputPhone = document.querySelectorAll('input[type=tel]'),
+            inputName = document.querySelectorAll('input[placeholder="Ваше имя"]'),
+            inputMessage = document.getElementById('form2-message');
 
         calcItem.forEach(elem => {
             elem.addEventListener('input', () => {
-                elem.value = elem.value.replace(/[^0-9]/gi, '');
+                elem.value = elem.value.replace(/[^0-9]/ig, '');
             });
+        });
+
+        inputPhone.forEach(elem => {
+            elem.addEventListener('input', () => {
+                elem.value = elem.value.replace(/[+0-9]/ig, '');
+            });
+        });
+
+        inputName.forEach(elem => {
+            elem.addEventListener('input', () => {
+                elem.value = elem.value.replace(/[^а-яёА-ЯЁ ]/ig, '');
+            });
+        });
+
+        inputMessage.addEventListener('input', () => {
+            inputMessage.value = inputMessage.value.replace(/[^а-яёА-ЯЁ ]/ig, '');
         });
     };
 
@@ -338,4 +360,62 @@ window.addEventListener('DOMContentLoaded', () => {
     };
 
     calc(100);
+
+    //form-ajax-send
+    const sendForm = () => {
+        const errorMessage = 'Что-то пошло не так...',
+            loadMessange = 'Загрузка...',
+            successMesage = 'Спасибо! Мы скоро с вами свяжемся!',
+            mainForm = document.getElementById('form1'),
+            footerForm = document.getElementById('form2'),
+            modalForm = document.getElementById('form3'),
+            statusMessange = document.createElement('div');
+
+        const postData = (body, outputData, errorData) => {
+            const request = new XMLHttpRequest();
+            request.addEventListener('readystatechange', () => {
+                if (request.readyState !== 4) {
+                    return;
+                }
+                if (request.status === 200) {
+                    outputData();
+                } else {
+                    errorData(request.status);
+                }
+            });
+            request.open('POST', './server.php');
+            request.setRequestHeader('Content-Type', 'application/json');
+            request.send(JSON.stringify(body));
+        };
+
+        statusMessange.style.cssText = 'font-size: 2rem; color: white';
+
+        const formListener = form => {
+            form.addEventListener('submit', event => {
+                event.preventDefault();
+                statusMessange.textContent = loadMessange;
+                form.appendChild(statusMessange);
+                const formData = new FormData(form),
+                    body = {};
+                formData.forEach((val, key) => {
+                    body[key] = val;
+                });
+                postData(body, () => {
+                    statusMessange.textContent = successMesage;
+                    form.reset();
+                },
+                error => {
+                    statusMessange.textContent = errorMessage;
+                    form.reset();
+                    console.error(error);
+                });
+            });
+        };
+
+        formListener(mainForm);
+        formListener(footerForm);
+        formListener(modalForm);
+    };
+
+    sendForm();
 });
