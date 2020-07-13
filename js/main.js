@@ -294,7 +294,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
         inputPhone.forEach(elem => {
             elem.addEventListener('input', () => {
-                elem.value = elem.value.replace(/[+0-9]/ig, '');
+                elem.value = elem.value.replace(/[^+0-9]/ig, '');
             });
         });
 
