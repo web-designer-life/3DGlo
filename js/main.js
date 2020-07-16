@@ -342,7 +342,23 @@ window.addEventListener('DOMContentLoaded', () => {
                 total = Math.round(price * typeValue * squareValue * countValue * dayValue);
                 const totalValueSteps = setInterval(() => {
                     if (step < total) {
-                        step++;
+                        if (total - step > 10000000) {
+                            step += 5000000;
+                        } else if (total - step > 1000000) {
+                            step += 500000;
+                        } else if (total - step > 100000) {
+                            step += 50000;
+                        } else if (total - step > 10000) {
+                            step += 5000;
+                        } else if (total - step > 1000) {
+                            step += 500;
+                        } else if (total - step > 100) {
+                            step += 50;
+                        } else if (total - step > 10) {
+                            step += 5;
+                        } else if (total - step >= 1) {
+                            step++;
+                        }
                         totalValue.textContent = step;
                     } else {
                         clearInterval(totalValueSteps);
