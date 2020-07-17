@@ -388,22 +388,22 @@ window.addEventListener('DOMContentLoaded', () => {
             modalForm = document.getElementById('form3'),
             statusMessange = document.createElement('div');
 
-        const postData = (body, outputData, errorData) => {
+        const postData = body => new Promise((resolve, reject) => {
             const request = new XMLHttpRequest();
             request.addEventListener('readystatechange', () => {
                 if (request.readyState !== 4) {
                     return;
                 }
                 if (request.status === 200) {
-                    outputData();
+                    resolve();
                 } else {
-                    errorData(request.status);
+                    reject(request.status);
                 }
             });
-            request.open('POST', './server.php');
+            request.open('POST', '../server.php');
             request.setRequestHeader('Content-Type', 'application/json');
             request.send(JSON.stringify(body));
-        };
+        });
 
         statusMessange.style.cssText = 'font-size: 2rem; color: white';
 
@@ -412,20 +412,21 @@ window.addEventListener('DOMContentLoaded', () => {
                 event.preventDefault();
                 statusMessange.textContent = loadMessange;
                 form.appendChild(statusMessange);
-                const formData = new FormData(form),
-                    body = {};
+                const formData = new FormData(form);
+                const body = {};
                 formData.forEach((val, key) => {
                     body[key] = val;
                 });
-                postData(body, () => {
-                    statusMessange.textContent = successMesage;
-                    form.reset();
-                },
-                error => {
-                    statusMessange.textContent = errorMessage;
-                    form.reset();
-                    console.error(error);
-                });
+                postData(body)
+                    .then(() => {
+                        statusMessange.textContent = successMesage;
+                        form.reset();
+                    })
+                    .catch(error => {
+                        statusMessange.textContent = errorMessage;
+                        form.reset();
+                        console.log(error);
+                    });
             });
         };
 
