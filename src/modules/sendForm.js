@@ -1,5 +1,6 @@
 const sendForm = () => {
     const errorMessage = 'Что-то пошло не так...',
+        inputMessage = 'Вы ввели не все данные!',
         loadMessange = 'Загрузка...',
         successMesage = 'Спасибо! Мы скоро с вами свяжемся!',
         mainForm = document.getElementById('form1'),
@@ -15,28 +16,43 @@ const sendForm = () => {
         body: JSON.stringify(body)
     });
 
+    function checkArray(body) {
+        for (const key in body) {
+            if (body[key] === '') {
+                return false;
+            }
+        }
+        return true;
+    }
+
     statusMessange.style.cssText = 'font-size: 2rem; color: white';
 
     const formListener = form => {
         form.addEventListener('submit', event => {
             event.preventDefault();
-            statusMessange.textContent = loadMessange;
-            form.appendChild(statusMessange);
             const formData = new FormData(form);
             const body = {};
             formData.forEach((val, key) => {
+                val = val.replace(/^\s*/, '').replace(/\s*$/, '');
                 body[key] = val;
             });
-            postData(body)
-                .then(() => {
-                    statusMessange.textContent = successMesage;
-                    form.reset();
-                })
-                .catch(error => {
-                    statusMessange.textContent = errorMessage;
-                    form.reset();
-                    console.log(error);
-                });
+            if (checkArray(body)) {
+                statusMessange.textContent = loadMessange;
+                form.appendChild(statusMessange);
+                postData(body)
+                    .then(() => {
+                        statusMessange.textContent = successMesage;
+                        form.reset();
+                    })
+                    .catch(error => {
+                        statusMessange.textContent = errorMessage;
+                        form.reset();
+                        console.log(error);
+                    });
+            } else {
+                statusMessange.textContent = inputMessage;
+                form.appendChild(statusMessange);
+            }
         });
     };
 
