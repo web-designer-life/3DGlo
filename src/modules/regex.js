@@ -23,7 +23,7 @@ const regex = () => {
     });
 
     inputMessage.addEventListener('input', () => {
-        inputMessage.value = inputMessage.value.replace(/[^а-яёА-ЯЁ ]/ig, '');
+        inputMessage.value = inputMessage.value.replace(/[a-zA-Z]/ig, '');
     });
 };
 
