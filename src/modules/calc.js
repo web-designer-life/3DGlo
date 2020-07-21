@@ -24,33 +24,42 @@ const calc = (price = 100) => {
         }
 
         if (typeValue && squareValue) {
-            let step = 0;
-            total = Math.round(price * typeValue * squareValue * countValue * dayValue);
-            const totalValueSteps = setInterval(() => {
-                if (step < total) {
-                    if (total - step > 10000000) {
-                        step += 5000000;
-                    } else if (total - step > 1000000) {
-                        step += 500000;
-                    } else if (total - step > 100000) {
-                        step += 50000;
-                    } else if (total - step > 10000) {
-                        step += 5000;
-                    } else if (total - step > 1000) {
-                        step += 500;
-                    } else if (total - step > 100) {
-                        step += 50;
-                    } else if (total - step > 10) {
-                        step += 5;
-                    } else if (total - step >= 1) {
-                        step++;
-                    }
-                    totalValue.textContent = step;
-                } else {
-                    clearInterval(totalValueSteps);
-                }
-            }, 1);
+            total = price * typeValue * squareValue * countValue * dayValue;
         }
+
+        const value = +totalValue.textContent,
+            newValue = Math.floor(total);
+
+        const animate = ({ timing, draw, duration }) => {
+
+            const start = performance.now();
+
+            requestAnimationFrame(function animate(time) {
+
+                let timeFraction = (time - start) / duration;
+                if (timeFraction > 1) {
+                    timeFraction = 1;
+                }
+
+                const progress = timing(timeFraction);
+
+                draw(progress);
+
+                if (timeFraction < 1) {
+                    requestAnimationFrame(animate);
+                }
+            });
+        };
+
+        animate({
+            duration: 300,
+            timing(timeFraction) {
+                return timeFraction;
+            },
+            draw(progress) {
+                totalValue.textContent = value + Math.ceil((newValue - value) * progress);
+            }
+        });
     };
 
     calcBlock.addEventListener('input', event => {
