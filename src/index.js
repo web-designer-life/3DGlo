@@ -21,7 +21,7 @@ import sendForm from './modules/sendForm';
 import anchorsBody from './modules/anchors';
 
 //timer
-countTimer('30 july 2021');
+countTimer('05 march 2021');
 //anchors
 anchorsBody();
 //menu
